@@ -31,11 +31,14 @@
     .emoji {
       font-size: 50px;
       position: absolute;
-      animation: bounce 2s infinite;
+      animation: float 8s linear infinite;
     }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-50px); }
+    @keyframes float {
+      0% { transform: translateY(0) translateX(0); }
+      25% { transform: translateY(-100px) translateX(50px); }
+      50% { transform: translateY(50px) translateX(-50px); }
+      75% { transform: translateY(-50px) translateX(100px); }
+      100% { transform: translateY(0) translateX(0); }
     }
   </style>
 </head>
@@ -45,6 +48,7 @@
   <p>Click below to see your secret Valentine message!</p>
   <button onclick="prank()">Reveal</button>
 
+  <!-- Funny sound effect -->
   <audio id="sound" src="https://www.myinstants.com/media/sounds/fart.mp3"></audio>
 
   <script>
@@ -56,32 +60,56 @@
     ];
     let clickCount = 0;
 
+    // Random background sounds list
+    let bgSounds = [
+      "https://www.myinstants.com/media/sounds/clown-horn.mp3",
+      "https://www.myinstants.com/media/sounds/trollolol.mp3",
+      "https://www.myinstants.com/media/sounds/windows-xp-error.mp3",
+      "https://www.myinstants.com/media/sounds/airhorn.mp3"
+    ];
+
     function prank() {
-      // Play sound every time
-      document.getElementById("sound").play();
+      // Play funny sound effect
+      let sound = document.getElementById("sound");
+      sound.currentTime = 0;
+      sound.play();
 
       // Show looping messages
       alert(messages[clickCount % messages.length]);
       clickCount++;
 
-      // After a few clicks, trigger chaos
-      if (clickCount % messages.length === 0) {
-        document.body.style.background = "lightblue";
-        document.querySelector("h1").innerText = "😂 Gotcha! 😂";
+      // Trigger chaos visuals
+      document.body.style.background = clickCount % 2 === 0 ? "lightblue" : "pink";
+      document.querySelector("h1").innerText = "😂 Gotcha! 😂";
 
-        for (let i = 0; i < 15; i++) {
-          let emoji = document.createElement("div");
-          emoji.className = "emoji";
-          emoji.innerText = ["💩","🤡","🐸","🍕"][Math.floor(Math.random()*4)];
-          emoji.style.left = Math.random()*window.innerWidth + "px";
-          emoji.style.top = Math.random()*window.innerHeight + "px";
-          document.body.appendChild(emoji);
-        }
+      for (let i = 0; i < 10; i++) {
+        let emoji = document.createElement("div");
+        emoji.className = "emoji";
+        emoji.innerText = ["💩","🤡","🐸","🍕"][Math.floor(Math.random()*4)];
+        emoji.style.left = Math.random()*window.innerWidth + "px";
+        emoji.style.top = Math.random()*window.innerHeight + "px";
+        document.body.appendChild(emoji);
+      }
 
-        // Endless loop prank
-        setTimeout(prank, 3000); // auto-trigger prank every 3 seconds
+      // Play random background sound
+      let randomSound = new Audio(bgSounds[Math.floor(Math.random()*bgSounds.length)]);
+      randomSound.play();
+
+      // Endless loop prank: auto-trigger again
+      setTimeout(prank, 4000);
+
+      // Spawn random pop-up windows
+      let popup = window.open("", "", "width=300,height=200");
+      if (popup) {
+        popup.document.write("<h2 style='color:red; text-align:center;'>💘 You can’t escape love! 💘</h2>");
+        popup.document.write("<p style='text-align:center;'>Gotcha again! 😂</p>");
       }
     }
+
+    // Prevent closing easily
+    window.onbeforeunload = function() {
+      return "You can’t escape love! 💘";
+    };
   </script>
 </body>
 </html>
